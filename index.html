@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 2</title>
+    <!-- This should no longer be required after removing element ID queries, need to doublecheck-->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js"></script> -->
+    <style>
+        body{
+            height: 100vh;
+            background-color: bisque;
+            display: flex;
+            flex: 1;
+            z-index: -999; /*As underneath everything else as possible*/
+        }
+        .background{
+            display:relative;
+            height: 98vh;
+            width: 100%;
+            background: #141414;
+            z-index: -998; /*As underneath everything else except the body*/
+        }
+        button{
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+        }
+
+        @media (max-width: 600px){
+            button{
+                width: 75px;
+                height: 75px;
+            }
+        }
+
+        /*Landscape TODO: Do we want portrait? Maybe configurable buttons*/
+        #one{
+            top: 10%;
+            left: 50%;
+        }
+
+        #two{
+            top: 25%;
+            left: 40%;
+        }
+
+        #three{
+            top: 40%;
+            left: 30%;
+        }
+
+        #four{
+            top: 60%;
+            left: 25%;
+        }
+
+        #five{
+            top: 75%;
+            left: 50%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background">
+        <button id="one" onclick="buttonPress(this.id)"></button>
+        <button id="two" onclick="buttonPress(this.id)"></button>
+        <button id="three" onclick="buttonPress(this.id)"></button>
+        <button id="four" onclick="buttonPress(this.id)"></button>
+        <button id="five" onclick="buttonPress(this.id)"></button>
+    </div> 
+    <!-- <p>Sensor-X: <span id="sensor-x"></span></p>
+    <p>Sensor-Y: <span id="sensor-y"></span></p>
+    <p>Sensor-Z: <span id="sensor-z"></span></p> -->
+
+    <script>
+        lockScreenState = {
+            "deviceType": "", // Set to IPhone or other
+            "timings":[       // The "lock pattern"
+                [0, 1000],  // First is which button, second is time delay from start (in ms)
+                [1, 2200],
+            ],
+        }
+
+        // Get the type of device by user agent string
+        if (/Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+            //document.write("Android Device");            
+            console.log("Android Device");
+            lockScreenState["deviceType"] = "android"
+          }else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)){
+            //document.write("Iphone Device");            
+            console.log("Iphone Device");
+            lockScreenState["deviceType"] = "iphone"
+          }else{
+            // false for not mobile device
+            console.log("not mobile device");
+            //document.write("Sorry bud, not supported")
+          }
+          
+
+        
+        async function sleep(ms) {
+            // Custom sleep function since somehow javascript still doesn't have one
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function startOrientationListening(){ // Has to remain synchronus for permission request
+            if (lockScreenState["deviceType"] == "android"){ // if on android
+                if(window.DeviceOrientationEvent && DeviceOrientationEvent.requestPermission){
+                    DeviceOrientationEvent.requestPermission()
+                }
+        
+                window.addEventListener("devicemotion", handleDeviceMotion, true)
+                function handleDeviceMotion(event) {
+                    let t1 = event.accelerationIncludingGravity.x
+                    let t2 = event.accelerationIncludingGravity.y
+                    let t3 = event.accelerationIncludingGravity.z
+                    document.getElementById('sensor-x').text(t1)
+                    document.getElementById('sensor-y').text(t2)
+                    document.getElementById('sensor-z').text(t3)
+                }
+            }// End of android
+        }
+        
+        function buttonPress(buttonID){
+            console.log(`button ${buttonID} pressed`)
+        }
+
+
+        /*timings = [
+            "1000",
+            "2200",
+        ]*/ // Can be used in drumstick one
+    </script>
+</body>
+
+
+</html>
