@@ -9,17 +9,25 @@
         <style>
             body{
                 height: 100vh;
-                background-color: bisque;
+                background: rgb(20,20,20);
+                background: radial-gradient(circle, rgba(14,14,14,1) 60%, rgba(17,17,17,1) 95%);
                 display: flex;
                 flex: 1;
                 z-index: -999; /*As underneath everything else as possible*/
+                overflow-y: hidden;
+                scroll-behavior: unset;
             }
             .background{
                 display: relative;
                 height: 98vh;
                 width: 100%;
-                background-image: url("https://images.unsplash.com/photo-1530569673472-307dc017a82d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=776&q=80");
+                background: transparent;
                 /*z-index: -998; /*As underneath everything else except the body*/
+                background: url(https://images.unsplash.com/photo-1655336450608-2a5e0c669639?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1169&q=80);
+                object-fit: cover;
+                object-position: left;
+                background-position-x: center;
+                background-position-y: bottom;
             }
             button{
                 position: absolute;
@@ -75,7 +83,7 @@
                 width: 300px;
                 height: 300px;
                 font-size: 8vh;
-                color: blue;
+                color: #f0f0f0;
             }
 
             #wrongPasscode{
@@ -243,6 +251,7 @@
             //Shows the buttons after clicking the initial start button, or any of the incorrect passcode/beat message buttons
             function showButtons(){
                 document.getElementById('locked').style.display = "none";
+                document.getElementById('background').style.background = "none";
                 document.getElementById('background').style.zIndex = -998;
                 document.getElementById('buttonDrums').style.display = "block";
                 document.getElementById('wrongPasscode').style.display = "none";
