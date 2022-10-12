@@ -7,6 +7,9 @@
         <title>Beat Lock</title>
         <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon">
         <style>
+            html{
+                overflow: hidden;
+            }
             body{
                 height: 100vh;
                 background: rgb(20,20,20);
@@ -15,6 +18,7 @@
                 flex: 1;
                 z-index: -999; /*As underneath everything else as possible*/
                 overflow-y: hidden;
+                -webkit-overflow-scrolling: touch;
                 scroll-behavior: unset;
             }
             .background{
