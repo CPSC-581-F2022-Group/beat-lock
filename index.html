@@ -10,6 +10,7 @@
             html{
                 overflow: hidden;
             }
+
             body{
                 height: 100vh;
                 background: rgb(20,20,20);
@@ -21,6 +22,7 @@
                 -webkit-overflow-scrolling: touch;
                 scroll-behavior: unset;
             }
+
             .background{
                 display: relative;
                 height: 98vh;
@@ -33,12 +35,14 @@
                 background-position-x: center;
                 background-position-y: bottom;
             }
+
             button{
                 position: absolute;
                 width: 100px;
                 height: 100px;
                 border-radius: 50%;
             }
+
             .buttonDrums{
                 display: none;
             }
@@ -52,7 +56,6 @@
                 }
             }
 
-            /*Landscape TODO: Do we want portrait? Maybe configurable buttons*/
             #one{
                 top: 10%;
                 left: 50%;
@@ -160,34 +163,27 @@
             <button id="five" onclick="buttonPress(this.id)">5</button>
             <audio id="sound" src="https://bigsoundbank.com/UPLOAD/mp3/2308.mp3"></audio>
         </div>
-        
-        <!-- <p>Sensor-X: <span id="sensor-x"></span></p>
-        <p>Sensor-Y: <span id="sensor-y"></span></p>
-        <p>Sensor-Z: <span id="sensor-z"></span></p> -->
 
         <script>
-            var passcode = 0; //tracking the number of buttons pressed for the passcode
-            var incorrectPasscodes = 0; //tracking the number of incorrect passcode attempts
-            var checkTimings = [];
+            var passcode = 0; // Tracking the number of buttons pressed for the passcode
+            var incorrectPasscodes = 0; // Tracking the number of incorrect passcode attempts
+            var checkTimings = []; // Array to store the user input
             lockScreenState = {
-                "deviceType": "", // Set to IPhone or other
+                "deviceType": "", // Set to iPhone or other
                 "timings":["four", "two", "three", "four", "four", "one", "five"] // The "lock pattern"
             }
             
             // Get the type of device by user agent string
-            if (/Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
-                //document.write("Android Device");            
+            if (/Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){       
                 console.log("Android Device");
                 lockScreenState["deviceType"] = "android"
-            }else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)){
-                //document.write("Iphone Device");            
+            }else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)){            
                 console.log("Iphone Device");
                 lockScreenState["deviceType"] = "iphone"
                 document.getElementsByTagName("body")[0].style.marginTop = "20px;"
             }else{
-                // false for not mobile device
+                // False for not mobile device
                 console.log("not mobile device");
-                //document.write("Sorry bud, not supported")
             }
             
             async function sleep(ms) {
@@ -195,42 +191,25 @@
                 return new Promise(resolve => setTimeout(resolve, ms));
             }
 
-            function startOrientationListening(){ // Has to remain synchronus for permission request
-                if (lockScreenState["deviceType"] == "android"){ // if on android
-                    if(window.DeviceOrientationEvent && DeviceOrientationEvent.requestPermission){
-                        DeviceOrientationEvent.requestPermission()
-                    }
-            
-                    window.addEventListener("devicemotion", handleDeviceMotion, true)
-                    function handleDeviceMotion(event) {
-                        let t1 = event.accelerationIncludingGravity.x
-                        let t2 = event.accelerationIncludingGravity.y
-                        let t3 = event.accelerationIncludingGravity.z
-                        document.getElementById('sensor-x').text(t1)
-                        document.getElementById('sensor-y').text(t2)
-                        document.getElementById('sensor-z').text(t3)
-                    }
-                }// End of android
-            }
-
             var startTime = 0;
             var endTime = 0;
             
-            //Checks the value of the button pressed
+            // Checks the value of the button pressed
             function buttonPress(buttonID){
                 console.log(`button ${buttonID} pressed`);
                 var audio = document.getElementById("sound");
-                audio.playbackRate = 5;
+                audio.playbackRate = 10;
+                audio.load(); // Need for iPhone Safari fix to play sound
                 audio.play();
                 passcode += 1;
                 
-                //Creates a timer to ensure that the beat is within the time constraint
+                // Creates a timer to ensure that the beat is within the time constraint
                 if (startTime == 0){
                     startTime = Date.now();
                 }
                 checkTimings.push(buttonID);
 
-                //Checks when there has been an input of 7 numbers (drum beats)
+                // Checks when there has been an input of 7 numbers (drum beats)
                 if (passcode >= 7){
                     endTime = Math.floor(Date.now() - startTime);
                     console.log(endTime);
@@ -239,7 +218,7 @@
                     console.log("Matching passcode: " + (enteredPasscode == actualPasscode));
                     console.log("Correct beat time: " + (endTime >= 3500 && endTime <= 4500));
 
-                    //Checks if the beat and passcode is correct, if yes it goes to the homescreen, if no it shows incorrect input messages
+                    // Checks if the beat and passcode is correct, if yes it goes to the homescreen, if no it shows incorrect input messages
                     if ((endTime >= 3500 && endTime <= 4500) && (enteredPasscode == actualPasscode)){
                         showHomeScreen();
                     }else{
@@ -253,7 +232,7 @@
                 }
             }
 
-            //Shows the buttons after clicking the initial start button, or any of the incorrect passcode/beat message buttons
+            // Shows the buttons after clicking the initial start button, or any of the incorrect passcode/beat message buttons
             function showButtons(){
                 document.getElementById('locked').style.display = "none";
                 document.getElementById('background').style.background = "none";
@@ -265,21 +244,22 @@
                 document.getElementById('lockedOut').style.display = "none";
             }
 
-            //Shows the different wrong input messages depending on the incorrect beat, passcode, or both
+            // Shows the different wrong input messages depending on the incorrect beat, passcode, or both
             function showWrongPasscode(endTime, enteredPasscode, actualPasscode){
                 document.getElementById('background').style.zIndex = 0;
                 document.getElementById('buttonDrums').style.display = "none";
                 document.getElementById('lockedOut').style.display = "none";
 
-                if ((endTime >= 3500 && endTime <= 4500) && (enteredPasscode != actualPasscode)){ //Correct beat, wrong passcode
+                if ((endTime >= 3500 && endTime <= 4500) && (enteredPasscode != actualPasscode)){ // Correct beat, wrong passcode
                     document.getElementById('wrongPasscode').style.display = "block";
-                }else if ((endTime < 3500 || endTime > 4500) && (enteredPasscode == actualPasscode)){ //Wrong beat, correct passcode
+                }else if ((endTime < 3500 || endTime > 4500) && (enteredPasscode == actualPasscode)){ // Wrong beat, correct passcode
                     document.getElementById('wrongBeat').style.display = "block";
                 }
-                else{ //Wrong beat and wrong passcode
+                else{ // Wrong beat and wrong passcode
                     document.getElementById('wrongBeatPasscode').style.display = "block";
                 }
 
+                // Locks the phone for 30 seconds if there is 5 wrong attempts in a row
                 if (incorrectPasscodes == 5){
                     document.getElementById('wrongPasscode').style.display = "none";
                     document.getElementById('wrongBeat').style.display = "none";
@@ -291,7 +271,7 @@
                 }
             }
 
-            //Shows different homescreen images depending on the phone type
+            // Shows different homescreen images depending on the phone type
             function showHomeScreen(){
                 if (lockScreenState["deviceType"] == "android"){
                     document.getElementById('background').style.backgroundImage = 'url("https://raw.githubusercontent.com/CPSC-581-F2022-Group/beat-lock/5a72c77a1c43c327d159a071e294fd53523d4f08/img/shiwa-id-Uae7ouMw91A-unsplash_cropped.jpg")';
@@ -306,15 +286,10 @@
                     document.getElementById('background').style.backgroundRepeat = "no-repeat";
                     document.getElementById('buttonDrums').style.display = "none";
                 }else{
-                    //Do nothing since it is not a phone
+                    // Do nothing since it is not a phone
                     sleep(5000).then(() => {showButtons(); });
                 }
             }
-
-            /*timings = [
-                "1000",
-                "2200",
-            ]*/ // Can be used in drumstick one
         </script>
     </body>
 </html>
