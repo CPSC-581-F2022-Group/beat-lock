@@ -144,6 +144,30 @@
                 color: red;
                 display: none;
             }
+
+            .pulse {
+                animation: pulse-animation .6s infinite;
+            }
+            @keyframes pulse-animation {
+                0% {
+                    box-shadow: 0 0 0 0px rgba(255, 255, 255, 0.5);
+                }
+                100% {
+                    box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+                }
+            }
+
+            .bigpulse {
+                animation: big-pulse-animation .2s ease-out;
+            }
+            @keyframes big-pulse-animation {
+                0% {
+                    box-shadow: 0 0 0 0px rgba(255, 255, 255, 0.5);
+                }
+                100% {
+                    box-shadow: 0 0 0 50px rgba(255, 255, 255, 0);
+                }
+            }
         </style>
     </head>
     <body>
@@ -156,11 +180,11 @@
         </div>
 
         <div class="buttonDrums" id="buttonDrums">
-            <button id="one" onclick="buttonPress(this.id)">1</button>
-            <button id="two" onclick="buttonPress(this.id)">2</button>
-            <button id="three" onclick="buttonPress(this.id)">3</button>
-            <button id="four" onclick="buttonPress(this.id)">4</button>
-            <button id="five" onclick="buttonPress(this.id)">5</button>
+            <button class="pulse" id="one" onclick="buttonPress(this.id)">1</button>
+            <button class="pulse" id="two" onclick="buttonPress(this.id)">2</button>
+            <button class="pulse" id="three" onclick="buttonPress(this.id)">3</button>
+            <button class="pulse" id="four" onclick="buttonPress(this.id)">4</button>
+            <button class="pulse" id="five" onclick="buttonPress(this.id)">5</button>
             <audio id="sound" src="https://bigsoundbank.com/UPLOAD/mp3/2308.mp3"></audio>
         </div>
 
@@ -196,6 +220,7 @@
             
             // Checks the value of the button pressed
             function buttonPress(buttonID){
+                singlePulse(buttonID)
                 console.log(`button ${buttonID} pressed`);
                 var audio = document.getElementById("sound");
                 audio.playbackRate = 10;
@@ -230,6 +255,14 @@
                         showWrongPasscode(endTime, enteredPasscode, actualPasscode);
                     }
                 }
+                
+            }
+
+            // Runs a large pulse when buttons are pressed
+            async function singlePulse(buttonID){
+                document.getElementById(buttonID).classList.add("bigpulse")
+                await sleep(250)
+                document.getElementById(buttonID).classList.remove("bigpulse")
             }
 
             // Shows the buttons after clicking the initial start button, or any of the incorrect passcode/beat message buttons
